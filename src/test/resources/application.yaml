@@ -1,0 +1,9 @@
+spring:
+  datasource:
+    url: jdbc:tc:postgresql:16:///country?TC_DAEMON=true
+
+
+
+app:
+  api:
+    version: 1.0
