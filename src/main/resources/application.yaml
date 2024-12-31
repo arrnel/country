@@ -1,0 +1,14 @@
+server:
+  port: ${COUNTRY_PORT:9191}
+
+spring:
+  application:
+    name: country
+  datasource:
+    url: 'jdbc:postgresql://localhost:${COUNTRY_DB_PORT:6432}/country'
+    username: ${COUNTRY_DB_USER:postgres}
+    password: ${COUNTRY_DB_PASSWORD:secret}
+
+app:
+  api:
+    version: 1.0
