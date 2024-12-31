@@ -1,0 +1,58 @@
+name: countries-local
+
+services:
+
+  countries-postgres:
+    container_name: countries-postgres
+    image: postgres:16.4
+    restart: unless-stopped
+    ports:
+      - "${COUNTRIES_DB_PORT:-6432}:5432"
+    environment:
+      - CREATE_DATABASES=country
+      - PGUSER=postgres
+      - POSTGRES_PASSWORD=secret
+    command: postgres -c max_prepared_transactions=100
+    volumes:
+      - countries-pgdata:/var/lib/postgresql/data
+      - ./.postgres/init-database.sh:/docker-entrypoint-initdb.d/init-database.sh
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "postgres", "-d", "postgres" ]
+      interval: 3s
+      timeout: 3s
+      retries: 5
+    networks:
+      - countries-network
+
+  countries-pgadmin:
+    container_name: countries-pgadmin
+    image: dpage/pgadmin4:8.11.0
+    restart: "no"
+    ports:
+      - "${COUNTRIES_PGADMIN_PORT:-6433}:80"
+    volumes:
+      - countries-pgadmin-data:/var/lib/pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: 12345
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: "False"
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:80/misc/ping || exit -1
+      interval: 10s
+      timeout: 5s
+      start_period: 10s
+      retries: 5
+    depends_on:
+      countries-postgres:
+        condition: service_healthy
+    networks:
+      - countries-network
+
+volumes:
+  countries-pgdata:
+  countries-pgadmin-data:
+
+networks:
+  countries-network:
+    driver: bridge
