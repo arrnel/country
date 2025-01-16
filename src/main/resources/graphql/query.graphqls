@@ -1,0 +1,44 @@
+scalar Long
+scalar NonNegativeInt
+scalar PositiveInt
+
+type Query {
+    findAll(
+        name: String,
+        code: String,
+        page: NonNegativeInt = 0,
+        size: PositiveInt = 20,
+        sort: String = "name"
+    ): PageResponseDTO
+    findById(id: Long!): CountryResponseDTO!
+}
+
+type Mutation {
+    add(input: AddCountryRequestDTO!): CountryResponseDTO!
+    update(id: Long!, input: UpdateCountryRequestDTO!): CountryResponseDTO!
+    delete(id: Long!): Boolean
+}
+
+type CountryResponseDTO {
+    id: Long!
+    name: String!
+    code: String!
+}
+
+type PageResponseDTO {
+    currentPage: Int!
+    totalPages: Int!
+    itemsPerPage: Int!
+    totalItems: Long!
+    data: [CountryResponseDTO!]!
+}
+
+input AddCountryRequestDTO {
+    name: String!
+    code: String!
+}
+
+input UpdateCountryRequestDTO {
+    name: String!
+    code: String!
+}
