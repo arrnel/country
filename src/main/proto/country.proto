@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+package com.example.grpc.country;
+
+option java_multiple_files = true;
+option java_package = "com.example.grpc.country";
+option java_outer_classname = "CountryProto";
+
+service CountryService {
+  rpc FindById(IdRequest) returns (CountryGrpcResponseDTO){}
+  rpc Add(AddCountryGrpcRequestDTO) returns(CountryGrpcResponseDTO){}
+  rpc RandomCountries(CountRequest) returns(CountriesResponseDTO){}
+}
+
+message IdRequest {
+  sint64 id = 1;
+}
+
+message CountRequest {
+  uint32 count = 1;
+}
+
+message CountriesResponseDTO {
+  repeated CountryGrpcResponseDTO allCountries = 1;
+}
+
+message CountryGrpcResponseDTO {
+  sint64 id = 1;
+  string name = 2;
+  string code = 3;
+  google.protobuf.Timestamp createdDate = 4;
+  google.protobuf.Timestamp updatedDate = 5;
+}
+
+message AddCountryGrpcRequestDTO{
+  string name = 1;
+  string code = 2;
+}

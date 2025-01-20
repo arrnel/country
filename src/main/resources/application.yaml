@@ -8,6 +8,10 @@ spring:
     url: 'jdbc:postgresql://localhost:${COUNTRY_DB_PORT:6432}/country'
     username: ${COUNTRY_DB_USER:postgres}
     password: ${COUNTRY_DB_PASSWORD:secret}
+  grpc:
+    server:
+      servlet:
+        enabled: false
 
 app:
   api:

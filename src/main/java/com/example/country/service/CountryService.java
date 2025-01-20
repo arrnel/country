@@ -5,6 +5,7 @@ import com.example.country.data.entity.Country;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface CountryService {
@@ -16,6 +17,8 @@ public interface CountryService {
     boolean isCountryExistsByNameOrCode(String name, String code);
 
     boolean isCountryExistsByNameOrCodeAndNotId(String name, String code, Long id);
+
+    List<Country> findAll();
 
     Page<Country> findAll(CountryFilter countryFilter, Pageable pageable);
 

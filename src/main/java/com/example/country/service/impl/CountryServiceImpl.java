@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -43,6 +44,11 @@ public class CountryServiceImpl implements CountryService {
     @Override
     public boolean isCountryExistsByNameOrCodeAndNotId(String name, String code, Long id) {
         return countryRepository.existsByNameOrCodeAndIdNot(name, code, id);
+    }
+
+    @Override
+    public List<Country> findAll() {
+        return countryRepository.findAll();
     }
 
     @Override
