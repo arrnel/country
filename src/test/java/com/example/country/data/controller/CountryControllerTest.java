@@ -18,6 +18,8 @@ import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.MapBindingResult;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -48,7 +50,8 @@ class CountryControllerTest {
     void country_ValidRequest_ReturnsCountry() {
 
         // Data
-        final var country = new Country(1L, VALID_COUNTRY_NAME, VALID_COUNTRY_CODE);
+        final var now = Timestamp.valueOf(LocalDateTime.now());
+        final var country = new Country(1L, VALID_COUNTRY_NAME, VALID_COUNTRY_CODE, now, now);
 
         // Mock
         Mockito.doReturn(Optional.of(country))
@@ -74,7 +77,8 @@ class CountryControllerTest {
     void country_ValidRequest_ThrowsCountryNotFound() {
 
         // Data
-        final var country = new Country(1L, VALID_COUNTRY_NAME, VALID_COUNTRY_CODE);
+        final var now = Timestamp.valueOf(LocalDateTime.now());
+        final var country = new Country(1L, VALID_COUNTRY_NAME, VALID_COUNTRY_CODE, now, now);
 
         // Mock
         Mockito.doReturn(Optional.empty())
@@ -95,8 +99,10 @@ class CountryControllerTest {
     void findById_ValidRequest_ReturnsCountry() {
 
         // Data
-        final var country = new Country(1L, VALID_COUNTRY_NAME, VALID_COUNTRY_CODE);
-        final var expectedResponseDTO = new CountryResponseDTO(1L, VALID_COUNTRY_NAME, VALID_COUNTRY_CODE);
+        final var ldt = LocalDateTime.now();
+        final var now = Timestamp.valueOf(ldt);
+        final var country = new Country(1L, VALID_COUNTRY_NAME, VALID_COUNTRY_CODE, now, now);
+        final var expectedResponseDTO = new CountryResponseDTO(1L, VALID_COUNTRY_NAME, VALID_COUNTRY_CODE, ldt, ldt);
 
         // Test
         final var result = countryController.findById(country);
@@ -117,10 +123,14 @@ class CountryControllerTest {
     void update_ValidRequest_UpdatesCountry() throws BindException {
 
         // Data
-        final var oldCountry = new Country(1L, VALID_COUNTRY_CODE, VALID_COUNTRY_CODE);
+        final var ldtPast = LocalDateTime.now();
+        final var past = Timestamp.valueOf(ldtPast);
+        final var ldtNow = LocalDateTime.now();
+        final var now = Timestamp.valueOf(ldtNow);
+        final var oldCountry = new Country(1L, VALID_COUNTRY_CODE, VALID_COUNTRY_CODE, past, past);
         final var requestDTO = new UpdateCountryRequestDTO(VALID_UPDATED_COUNTRY_NAME, VALID_UPDATED_COUNTRY_CODE);
-        final var updatedCountry = new Country(1L, VALID_UPDATED_COUNTRY_NAME, VALID_UPDATED_COUNTRY_CODE);
-        final var responseDTO = new CountryResponseDTO(1L, VALID_UPDATED_COUNTRY_NAME, VALID_UPDATED_COUNTRY_CODE);
+        final var updatedCountry = new Country(1L, VALID_UPDATED_COUNTRY_NAME, VALID_UPDATED_COUNTRY_CODE, past, now);
+        final var responseDTO = new CountryResponseDTO(1L, VALID_UPDATED_COUNTRY_NAME, VALID_UPDATED_COUNTRY_CODE, ldtPast, ldtNow);
         final var bindingResult = new MapBindingResult(Map.of(), "request");
 
         // Mock
@@ -152,7 +162,8 @@ class CountryControllerTest {
     void update_CountryAlreadyExists_ThrowsConflict() {
 
         // Data
-        final var oldCountry = new Country(1L, VALID_COUNTRY_NAME, VALID_COUNTRY_CODE);
+        final var now = Timestamp.valueOf(LocalDateTime.now());
+        final var oldCountry = new Country(1L, VALID_COUNTRY_NAME, VALID_COUNTRY_CODE, now, now);
         final var requestDTO = new UpdateCountryRequestDTO(VALID_UPDATED_COUNTRY_NAME, VALID_UPDATED_COUNTRY_CODE);
         final var bindingResult = new MapBindingResult(Map.of(), "request");
 
@@ -177,8 +188,10 @@ class CountryControllerTest {
     @Test
     @DisplayName("update: throws BindException when request is invalid")
     void update_InvalidRequest_ThrowsBindException() {
+
         // Data
-        final var oldCountry = new Country(1L, VALID_COUNTRY_NAME, VALID_COUNTRY_CODE);
+        final var now = Timestamp.valueOf(LocalDateTime.now());
+        final var oldCountry = new Country(1L, VALID_COUNTRY_NAME, VALID_COUNTRY_CODE, now, now);
         final var requestDTO = new UpdateCountryRequestDTO(SHORT_COUNTRY_NAME, SHORT_COUNTRY_CODE);
         final var bindingResult = new MapBindingResult(Map.of(), "request");
         bindingResult.addError(new FieldError("request", "name", "error"));
@@ -206,7 +219,8 @@ class CountryControllerTest {
     void delete_ValidRequest_ReturnsNoContent() {
 
         // Data
-        final var country = new Country(1L, VALID_COUNTRY_NAME, VALID_COUNTRY_CODE);
+        final var now = Timestamp.valueOf(LocalDateTime.now());
+        final var country = new Country(1L, VALID_COUNTRY_NAME, VALID_COUNTRY_CODE, now, now);
 
         // Steps
         final var result = countryController.delete(country);

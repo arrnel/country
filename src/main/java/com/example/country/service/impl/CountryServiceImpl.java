@@ -6,6 +6,7 @@ import com.example.country.data.repository.CountryRepository;
 import com.example.country.mapper.CountryMapper;
 import com.example.country.service.CountryService;
 import com.example.country.specs.CountrySpecs;
+import com.example.country.util.DateUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,7 +23,11 @@ public class CountryServiceImpl implements CountryService {
 
     @Override
     public Country add(Country country) {
-        return countryRepository.save(country);
+        final var now = DateUtil.getCurrentTimestamp();
+        return countryRepository.save(
+                country.setDateCreated(now)
+                        .setDateUpdated(now)
+        );
     }
 
     @Override
@@ -47,7 +52,9 @@ public class CountryServiceImpl implements CountryService {
 
     @Override
     public Country update(Country oldCountry, Country newCountry) {
-        return countryRepository.save(CountryMapper.update(oldCountry, newCountry));
+        return countryRepository.save(
+                CountryMapper.update(oldCountry, newCountry)
+                        .setDateUpdated(DateUtil.getCurrentTimestamp()));
     }
 
     @Override

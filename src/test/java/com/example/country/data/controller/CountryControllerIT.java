@@ -1,5 +1,6 @@
 package com.example.country.data.controller;
 
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +13,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @Transactional // using for remove data from db after test
 @SpringBootTest
@@ -69,20 +69,20 @@ class CountryControllerIT {
                         }""");
 
         // Steps
-        mockMvc.perform(requestBuilder)
-                .andDo(print())
+        var result = mockMvc.perform(requestBuilder);
 
+        // Assertions precondition
+        result.andReturn().getResponse().getContentAsString();
+
+        // Assertions
+        result.andDo(print())
                 // Assertions
                 .andExpectAll(
                         status().isOk(),
                         content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON),
-                        content().json("""
-                                {
-                                	"id": 1,
-                                	"name": "Spain",
-                                	"code": "SP"
-                                }
-                                """)
+                        jsonPath("$.id", Matchers.is(1)),
+                        jsonPath("$.name", Matchers.is("Spain")),
+                        jsonPath("$.code", Matchers.is("SP"))
                 );
 
     }
