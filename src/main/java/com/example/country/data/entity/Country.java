@@ -5,6 +5,8 @@ import lombok.*;
 import lombok.experimental.Accessors;
 import org.hibernate.proxy.HibernateProxy;
 
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.Objects;
 
 @Getter
@@ -33,6 +35,14 @@ public class Country {
     @Column(name = "code", nullable = false, unique = true)
     private String code;
 
+    @ToString.Include
+    @Column(name = "date_created", nullable = false, unique = true)
+    private Timestamp dateCreated;
+
+    @ToString.Include
+    @Column(name = "date_updated", nullable = false, unique = true)
+    private Timestamp dateUpdated;
+
     @Override
     public final boolean equals(Object o) {
         if (this == o) return true;
@@ -48,4 +58,5 @@ public class Country {
     public final int hashCode() {
         return this instanceof HibernateProxy proxy ? proxy.getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
     }
+
 }

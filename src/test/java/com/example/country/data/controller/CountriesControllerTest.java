@@ -22,6 +22,8 @@ import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.MapBindingResult;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,15 +52,17 @@ class CountriesControllerTest {
     void add_ValidRequest_ReturnsAddedCountry() throws BindException {
 
         // Data
+        final var ldtNow = LocalDateTime.now();
+        final var now = Timestamp.valueOf(ldtNow);
         final var requestDTO = new AddCountryRequestDTO(VALID_COUNTRY_NAME, VALID_COUNTRY_CODE);
-        final var expectedResponseDTO = new CountryResponseDTO(1L, VALID_COUNTRY_NAME, VALID_COUNTRY_CODE);
+        final var expectedResponseDTO = new CountryResponseDTO(1L, VALID_COUNTRY_NAME, VALID_COUNTRY_CODE, ldtNow, ldtNow);
         final var bindingResult = new MapBindingResult(new HashMap<>(), "request");
 
         // Mock
         Mockito.doReturn(false)
                 .when(countryService)
                 .isCountryExistsByNameOrCode(VALID_COUNTRY_NAME, VALID_COUNTRY_CODE);
-        Mockito.doReturn(new Country(1L, VALID_COUNTRY_NAME, VALID_COUNTRY_CODE))
+        Mockito.doReturn(new Country(1L, VALID_COUNTRY_NAME, VALID_COUNTRY_CODE, now, now))
                 .when(countryService)
                 .add(argThat(countryArg ->
                         countryArg.getName().equals(VALID_COUNTRY_NAME) &&
@@ -130,10 +134,12 @@ class CountriesControllerTest {
     void findAll_ValidRequest_ReturnsPageResponse() {
 
         // Data
+        final var ldtNow = LocalDateTime.now();
+        final var now = Timestamp.valueOf(ldtNow);
         final var filter = new CountryFilter("AT", "A");
         final var countries = List.of(
-                new Country(1L, "Austria", "AT"),
-                new Country(2L, "Australia", "AU"));
+                new Country(1L, "Austria", "AT", now, now),
+                new Country(2L, "Australia", "AU", now, now));
         final var pageable = PageRequest.of(0, 20);
         final var page = new PageImpl<>(countries, pageable, countries.size());
 

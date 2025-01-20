@@ -31,6 +31,8 @@ public class CountryMapper {
                 .id(entity.getId())
                 .name(entity.getName())
                 .code(entity.getCode())
+                .dateCreated(entity.getDateCreated().toLocalDateTime())
+                .dateUpdated(entity.getDateUpdated().toLocalDateTime())
                 .build();
     }
 
@@ -53,6 +55,7 @@ public class CountryMapper {
                 .code(newCountry.getCode() == null || newCountry.getCode().isEmpty()
                         ? oldCountry.getCode()
                         : newCountry.getCode())
+                .dateCreated(oldCountry.getDateCreated())
                 .build();
     }
 

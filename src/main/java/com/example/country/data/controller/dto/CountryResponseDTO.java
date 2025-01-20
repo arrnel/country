@@ -3,6 +3,7 @@ package com.example.country.data.controller.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Builder
@@ -15,7 +16,13 @@ public record CountryResponseDTO(
         String name,
 
         @JsonProperty("code")
-        String code
+        String code,
+
+        @JsonProperty("date_created")
+        LocalDateTime dateCreated,
+
+        @JsonProperty("date_updated")
+        LocalDateTime dateUpdated
 
 ) {
 
